@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { Plus, Pencil, Trash2, Check, Play, Undo2, X, Skull } from 'lucide-react'
+import { isFeatured } from '../useGigs'
 
 const EMPTY = { title: '', client: '', reward: '', risk: 'low', notes: '' }
 const RISK_STYLE = { low: 'text-cyan border-cyan', mid: 'text-yellow border-yellow', high: 'text-pink border-pink' }
@@ -70,6 +71,7 @@ export default function Gigs({ gigs, addGig, updateGig, deleteGig }) {
               <div className="min-w-0">
                 <h3 className={`font-bold ${g.status === 'done' ? 'line-through' : 'text-glow text-cyan'}`}>{g.title}</h3>
                 {g.client && <p className="text-xs text-slate-400">Klien: {g.client}</p>}
+                {isFeatured(g) && <p className="mt-1 text-[10px] tracking-widest text-yellow">★ GIG UTAMA</p>}
               </div>
               <span className={`shrink-0 rounded border px-2 py-0.5 text-[10px] uppercase ${RISK_STYLE[g.risk]}`}>{g.risk}</span>
             </div>
@@ -80,8 +82,10 @@ export default function Gigs({ gigs, addGig, updateGig, deleteGig }) {
                 <button onClick={() => updateGig(g.id, { status: NEXT[g.status] })} aria-label="Ganti status" className="rounded p-2 text-cyan hover:bg-cyan/10">
                   {g.status === 'open' ? <Play size={16} /> : g.status === 'active' ? <Check size={16} /> : <Undo2 size={16} />}
                 </button>
-                <button onClick={() => edit(g)} aria-label="Edit" className="rounded p-2 text-yellow hover:bg-yellow/10"><Pencil size={16} /></button>
-                <button onClick={() => remove(g)} aria-label="Hapus" className="rounded p-2 text-pink hover:bg-pink/10"><Trash2 size={16} /></button>
+                {!isFeatured(g) && <>
+                  <button onClick={() => edit(g)} aria-label="Edit" className="rounded p-2 text-yellow hover:bg-yellow/10"><Pencil size={16} /></button>
+                  <button onClick={() => remove(g)} aria-label="Hapus" className="rounded p-2 text-pink hover:bg-pink/10"><Trash2 size={16} /></button>
+                </>}
               </div>
             </div>
           </li>
